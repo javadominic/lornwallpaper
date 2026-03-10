@@ -1,0 +1,50 @@
+name: lorn_wallpaper
+description: Premium Live Wallpapers by Lorn
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+  flutter: '>=3.19.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Math utilities for 3D rendering
+  vector_math: ^2.1.4
+
+  # Sensor access for gyroscope parallax
+  sensors_plus: ^7.0.0
+
+  # UI & UX
+  shimmer: ^3.0.0
+  google_fonts: ^8.0.2
+
+  # State management
+  provider: ^6.1.1
+
+  # Utilities
+  path_provider: ^2.1.2
+  http: ^1.2.0
+  permission_handler: ^12.0.1
+
+  # Video playback for wallpaper previews
+  video_player: ^2.9.2
+
+  # File picker for user uploads
+  file_picker: ^8.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/models/
+    - assets/images/
+    - assets/thumbnails/
+    - assets/fonts/

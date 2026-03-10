@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Aether Live Wallpapers (Debug)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "args": [
+        "--enable-impeller"
+      ]
+    },
+    {
+      "name": "Aether Live Wallpapers (Profile)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile",
+      "args": [
+        "--enable-impeller"
+      ]
+    },
+    {
+      "name": "Aether Live Wallpapers (Release)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "args": [
+        "--enable-impeller"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Git init and push",
+			"type": "shell",
+			"command": "cd /Users/saeed/Desktop/wallpaper && git init && git add README.md && git commit -m \"vibe code trying\" && git branch -M main && git remote add origin https://github.com/javadominic/wallpaper-try.git && git push -u origin main"
+		},
+		{
+			"label": "Git Init",
+			"type": "shell",
+			"command": "git init"
+		},
+		{
+			"label": "Flutter Analyze",
+			"type": "shell",
+			"command": "export PATH=\"$PATH:$(brew --prefix)/Caskroom/flutter/*/flutter/bin\" && cd /Users/saeed/Desktop/wallpaper && flutter analyze 2>&1"
+		},
+		{
+			"label": "Read home_screen",
+			"type": "shell",
+			"command": "export PATH=\"$PATH:$(brew --prefix)/Caskroom/flutter/*/flutter/bin\" && cd /Users/saeed/Desktop/wallpaper && cat lib/screens/home/home_screen.dart | head -15"
+		},
+		{
+			"label": "analyze",
+			"type": "shell",
+			"command": "export PATH=\"$PATH:$(brew --prefix)/Caskroom/flutter/*/flutter/bin\" && cd /Users/saeed/Desktop/wallpaper && flutter analyze 2>&1 | head -60"
+		},
+		{
+			"label": "flutter-analyze",
+			"type": "shell",
+			"command": "export PATH=$PATH:$(brew --prefix)/Caskroom/flutter/3.41.4/flutter/bin && cd /Users/saeed/Desktop/wallpaper && flutter analyze"
+		},
+		{
+			"label": "cat-wallpaper-svc",
+			"type": "shell",
+			"command": "cd /Users/saeed/Desktop/wallpaper && cat lib/services/wallpaper_manager_service.dart"
+		},
+		{
+			"label": "Flutter pub get",
+			"type": "shell",
+			"command": "cd /Users/saeed/Desktop/wallpaper && rm -f pubspec.lock && flutter pub get"
+		},
+		{
+			"label": "Remove duplicate build.gradle",
+			"type": "shell",
+			"command": "mv /Users/saeed/Desktop/wallpaper/android/app/build.gradle /Users/saeed/Desktop/wallpaper/android/app/build.gradle.bak"
+		}
+	]
+}
