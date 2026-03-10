@@ -1,10 +1,11 @@
-# ✦ Aether Live Wallpapers
+# ✦ Lorn Wallpaper
 
-> Premium 3D Live Wallpapers with Gyroscope Parallax — Built with Flutter & Impeller
+> Live Video Wallpapers for Android — Built with Flutter + Native Kotlin WallpaperService
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.19+-02569B?style=flat&logo=flutter)
 ![Dart](https://img.shields.io/badge/Dart-3.2+-0175C2?style=flat&logo=dart)
-![Impeller](https://img.shields.io/badge/Renderer-Impeller-00FFFF?style=flat)
+![Android](https://img.shields.io/badge/Android-API%2024+-3DDC84?style=flat&logo=android)
+![Kotlin](https://img.shields.io/badge/Kotlin-Native%20Service-7F52FF?style=flat&logo=kotlin)
 
 ---
 
@@ -16,163 +17,165 @@
 
 ---
 
+## ✨ Features
+
+### 🎬 Live Video Wallpapers
+- Set any MP4 video as a **live wallpaper** on your Android device
+- Instant playback — video starts immediately when screen turns on (no loading delay)
+- Loops seamlessly, plays silently in the background
+- Applies to both Home Screen & Lock Screen
+
+### 📤 Upload Your Own
+- Pick any MP4 file from your device using the **+** button
+- **20 MB** max file size, **15 seconds** max duration
+- Uploads are validated, stored locally, and persist across app restarts
+- Long-press to delete an upload
+
+### 🖼️ Built-in Wallpaper Collection
+- 3 curated video wallpapers included:
+  - **Girl Behind Curtains** — aesthetic
+  - **Wicked Grace** — aesthetic / premium
+  - **Zenitsu White** — anime
+- Category filter chips (All, Anime, Aesthetic, Nature, Abstract, Space)
+- Full-screen video preview before setting
+
+### 🧊 Glassmorphism UI
+- Frosted-glass bottom sheet action drawer
+- Pulsing cyan glow CTA button with loading / success states
+- Shimmer loading effects
+- Immersive full-screen video viewer with auto-hiding controls
+
+---
+
 ## 🏗️ Architecture
 
 ```
 lib/
-├── main.dart                          # App entry point & Provider setup
-├── core/
-│   └── theme/
-│       ├── aether_theme.dart          # Colors, typography, theme data
-│       └── glass_card.dart            # Glassmorphism reusable widgets
+├── main.dart                              # App entry + Provider setup
+├── core/theme/
+│   ├── aether_theme.dart                  # Colors, spacing, typography
+│   └── glass_card.dart                    # Glassmorphism widgets
 ├── models/
-│   └── wallpaper_model.dart           # WallpaperModel, scene config, lights
+│   └── wallpaper_model.dart               # WallpaperModel, scene config
 ├── data/
-│   └── wallpaper_catalog.dart         # Sample wallpaper catalog (6 wallpapers)
+│   └── wallpaper_catalog.dart             # 3 built-in wallpapers
 ├── services/
-│   ├── asset_loading_service.dart     # Progressive .glb download with progress
-│   ├── gyroscope_service.dart         # Sensor → 3D rotation pipeline
-│   └── wallpaper_manager_service.dart # Native wallpaper API bridge
-├── rendering/
-│   └── aether_scene_renderer.dart     # 3D scene: crystal rendering, lighting, camera
+│   ├── asset_loading_service.dart         # Asset progress tracking
+│   ├── gyroscope_service.dart             # Sensor pipeline
+│   ├── wallpaper_manager_service.dart     # Platform channel → native wallpaper API
+│   └── upload_wallpaper_service.dart      # File picking, validation, storage
 ├── widgets/
-│   ├── shimmer_loading.dart           # Shimmer effects for loading states
-│   ├── action_drawer.dart             # Bottom sheet with wallpaper controls
+│   ├── video_thumbnail.dart               # VideoThumbnail + FullScreenVideoPlayer
+│   ├── action_drawer.dart                 # Glassmorphism bottom sheet
+│   ├── shimmer_loading.dart               # Shimmer effects
 │   └── grid/
-│       └── wallpaper_grid_card.dart   # Glassmorphism grid card with 3D preview
+│       └── wallpaper_grid_card.dart       # Grid card with video preview
 └── screens/
     ├── home/
-    │   └── home_screen.dart           # Homepage with category filter + grid
+    │   └── home_screen.dart               # Grid + category chips + upload section
     └── viewer/
-        └── wallpaper_viewer_screen.dart  # Full-screen 3D viewer + gyro parallax
+        ├── wallpaper_viewer_screen.dart    # Full-screen viewer (built-in)
+        └── upload_viewer_screen.dart       # Full-screen viewer (user uploads)
+
+android/.../kotlin/com/lorn/wallpaper/
+├── MainActivity.kt                        # Flutter ↔ Native platform channel
+└── VideoLiveWallpaperService.kt           # Android WallpaperService (MediaPlayer)
 ```
 
 ---
 
-## ✨ Features
+## 🔧 How the Live Wallpaper Works
 
-### 3D Crystal Rendering
-- Procedural low-poly crystal geometry with 3D projection
-- Per-face diffuse lighting with configurable light sources
-- Painter's algorithm for correct face ordering
-- Ambient floating particles and lens flare effects
-- `RepaintBoundary` for GPU-optimized repainting
-
-### Gyroscope Parallax
 ```
-Accelerometer + Gyroscope → Low-pass Filter → Smooth Lerp → Camera Matrix → Scene Render
+Flutter App                          Android Native
+─────────                            ──────────────
+User taps "Set as Live Wallpaper"
+        │
+        ▼
+MethodChannel('com.lorn.wallpaper/wallpaper')
+        │
+        ▼
+MainActivity.kt
+  • Copies MP4 to internal storage
+  • Saves path + bumps version in SharedPreferences
+  • Launches ACTION_CHANGE_LIVE_WALLPAPER intent
+        │
+        ▼
+VideoLiveWallpaperService.kt (WallpaperService)
+  • MediaPlayer renders to SurfaceHolder
+  • Synchronous prepare() for instant start
+  • On screen off → pause() (keeps player alive)
+  • On screen on → seekTo(0) + start() (instant resume)
+  • Version tracking detects wallpaper changes
 ```
-- Combines accelerometer (absolute tilt) with gyroscope (angular velocity)
-- Configurable sensitivity per wallpaper
-- 30° max rotation clamp to prevent disorientation
-- Smooth interpolation factor of 0.12 for fluid, lag-free parallax
-
-### Progressive Asset Loading
-- Chunked HTTP download with real-time progress tracking
-- Local file caching in app documents directory
-- Shimmer loading effects during initial texture downloads
-- Optimized for Indian 4G/5G bandwidth profiles
-
-### Action Drawer
-- Glassmorphism bottom sheet with `BackdropFilter` blur
-- Home Screen / Lock Screen toggle switches
-- Pulsing cyan glow CTA button
-- Loading → Success → Error state transitions
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Flutter SDK 3.19+ (with Impeller support)
+- Flutter SDK 3.19+
 - Dart SDK 3.2+
-- Android Studio / Xcode
-- Physical device with gyroscope (recommended)
+- Android SDK (API 24+, compileSdk 36)
+- JDK 17
 
 ### Setup
 
 ```bash
-# 1. Install dependencies
+# 1. Clone the repo
+git clone https://github.com/javadominic/lornwallpaper.git
+cd lornwallpaper
+
+# 2. Install dependencies
 flutter pub get
 
-# 2. Add your .glb 3D models to assets/models/
-#    (crystal_cyan.glb, crystal_amethyst.glb, etc.)
+# 3. Run on device/emulator
+flutter run
 
-# 3. Add thumbnail images to assets/thumbnails/
-#    (crystal_cyan.webp, etc.)
-
-# 4. Add SpaceGrotesk font files to assets/fonts/
-#    Download from: https://fonts.google.com/specimen/Space+Grotesk
-
-# 5. Run with Impeller enabled
-flutter run --enable-impeller
+# 4. Build debug APK
+flutter build apk --debug
 ```
 
-### Building for Release
+### Adding Your Own Built-in Wallpapers
 
-```bash
-# Android APK
-flutter build apk --release --enable-impeller
-
-# Android App Bundle
-flutter build appbundle --release --enable-impeller
-
-# iOS
-flutter build ios --release
-```
+1. Place your `.mp4` file in `assets/thumbnails/`
+2. Add an entry to `lib/data/wallpaper_catalog.dart`
+3. Set the `videoUrl` field to `'assets/thumbnails/your_file.mp4'`
 
 ---
 
-## ⚙️ Impeller Configuration
-
-Impeller is enabled in two places:
-
-**Android** — `AndroidManifest.xml`:
-```xml
-<meta-data
-    android:name="io.flutter.embedding.android.EnableImpeller"
-    android:value="true" />
-```
-
-**iOS** — `Info.plist`:
-```xml
-<key>FLTEnableImpeller</key>
-<true/>
-```
-
----
-
-## 📦 Key Dependencies
+## 📦 Dependencies
 
 | Package | Purpose |
 |---------|---------|
-| `flutter_scene` | Native 3D .glb model rendering |
-| `sensors_plus` | Gyroscope & accelerometer access |
-| `flutter_wallpaper_manager` | Android live wallpaper API |
-| `vector_math` | 3D matrix/vector math for camera transforms |
-| `shimmer` | Loading shimmer effects |
+| `video_player` | Video playback for previews |
+| `file_picker` | User MP4 file selection |
 | `provider` | State management |
-| `cached_network_image` | Image caching |
-| `permission_handler` | Runtime permission requests |
+| `path_provider` | App directory access |
+| `permission_handler` | Runtime permissions |
+| `sensors_plus` | Gyroscope / accelerometer |
+| `shimmer` | Loading shimmer effects |
+| `google_fonts` | SpaceGrotesk typography |
+| `vector_math` | Math utilities |
 
 ---
 
-## 🔋 Performance Notes
+## 📱 Upload Limits
 
-- **Frame budget:** 60fps target via `Ticker` with dt-based updates
-- **Battery optimization:** Preview mode uses reduced particle count and no gyro
-- **Render isolation:** `RepaintBoundary` isolates 3D canvas from UI tree
-- **Memory:** Painter's algorithm avoids Z-buffer memory overhead
-- **Network:** Progressive chunked downloads with ~50ms/MB simulation for 4G
+| Constraint | Limit |
+|------------|-------|
+| File format | `.mp4` only |
+| Max file size | **20 MB** |
+| Max duration | **15 seconds** |
 
 ---
 
-## 📝 Adding New Wallpapers
+## 🔋 Performance
 
-1. Create a `.glb` model (Blender recommended, keep poly count < 5000)
-2. Add entry to `lib/data/wallpaper_catalog.dart`
-3. Configure `WallpaperScene` with lighting and rotation parameters
-4. Place `.glb` in `assets/models/` and thumbnail in `assets/thumbnails/`
+- **Instant resume**: MediaPlayer stays alive (pause/resume, no re-create)
+- **Synchronous prepare()**: Local file playback starts with zero async overhead
+- **Version tracking**: SharedPreferences version counter detects wallpaper changes without path comparison
+- **Battery**: Video pauses on screen off, no background CPU usage
 
 ---
 
