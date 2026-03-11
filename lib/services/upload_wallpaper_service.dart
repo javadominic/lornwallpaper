@@ -26,8 +26,8 @@ class UploadValidationResult {
 }
 
 class UploadWallpaperService extends ChangeNotifier {
-  static const double maxSizeMb = 20.0;
-  static const int maxDurationSeconds = 15;
+  static const double maxSizeMb = 30.0;
+  static const int maxDurationSeconds = 50;
 
   final List<UploadedWallpaper> _uploads = [];
   List<UploadedWallpaper> get uploads => List.unmodifiable(_uploads);

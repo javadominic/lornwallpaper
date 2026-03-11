@@ -27,7 +27,7 @@
 
 ### 📤 Upload Your Own
 - Pick any MP4 file from your device using the **+** button
-- **20 MB** max file size, **15 seconds** max duration
+- **30 MB** max file size, **50 seconds** max duration
 - Uploads are validated, stored locally, and persist across app restarts
 - Long-press to delete an upload
 
@@ -165,8 +165,8 @@ flutter build apk --debug
 | Constraint | Limit |
 |------------|-------|
 | File format | `.mp4` only |
-| Max file size | **20 MB** |
-| Max duration | **15 seconds** |
+| Max file size | **30 MB** |
+| Max duration | **50 seconds** |
 
 ---
 
